@@ -35,6 +35,8 @@ type Player interface {
 	FindPlayer(cid string, a types.Account) (domain.Player, int, error)
 
 	FindCompetitionsUserApplied(types.Account) ([]string, error)
+
+	ResumeIndividual(d *domain.Competitor) error
 }
 
 type Work interface {

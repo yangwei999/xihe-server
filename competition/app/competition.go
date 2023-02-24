@@ -15,6 +15,10 @@ type CompetitionService interface {
 	CreateTeam(cid string, cmd *CompetitionTeamCreateCmd) error
 	JoinTeam(cid string, cmd *CompetitionTeamJoinCmd) error
 	GetMyTeam(cid string, competitor types.Account) (CompetitionTeamDTO, string, error)
+	LeaveTeam(cid string, competitor types.Account) error
+	DeleteMember(cid string, cmd *CompetitionTeamDeleteMemberCmd) error
+	ChangeTeamName(cid string, cmd *CompetitionTeamChangeNameCmd) error
+	TransferLeader(cid string, cmd *CompetitionTeamTransferCmd) error
 
 	// competition
 	Get(cid string, competitor types.Account) (UserCompetitionDTO, error)
@@ -35,7 +39,7 @@ func NewCompetitionService(
 	playerRepo repository.Player,
 	producer message.CalcScoreMessageProducer,
 	uploader uploader.SubmissionFileUploader,
-) *competitionService {
+) CompetitionService {
 	return &competitionService{
 		repo:             repo,
 		workRepo:         workRepo,

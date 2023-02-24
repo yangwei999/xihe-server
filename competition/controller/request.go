@@ -97,3 +97,52 @@ func (req *JoinTeamRequest) ToCmd(user types.Account) (
 
 	return
 }
+
+type DeleteMemberRequest struct {
+	Account string `json:"competitor_account"`
+}
+
+func (req *DeleteMemberRequest) ToCmd(leader types.Account) (
+	cmd app.CompetitionTeamDeleteMemberCmd, err error,
+) {
+	if cmd.User, err = types.NewAccount(req.Account); err != nil {
+		return
+	}
+
+	cmd.Leader = leader
+
+	return
+}
+
+type ChangeTeamNameRequest struct {
+	Name string `json:"team_name"`
+}
+
+func (req *ChangeTeamNameRequest) ToCmd(leader types.Account) (
+	cmd app.CompetitionTeamChangeNameCmd, err error,
+) {
+	if cmd.Name, err = domain.NewTeamName(req.Name); err != nil {
+		return
+	}
+
+	cmd.Leader = leader
+
+	return
+}
+
+type TransferLeaderRequest struct {
+	Account string `json:"competitor_account"`
+}
+
+func (req *TransferLeaderRequest) ToCmd(leader types.Account) (
+	cmd app.CompetitionTeamTransferCmd, err error,
+) {
+	if cmd.User, err = types.NewAccount(req.Account); err != nil {
+		return
+	}
+
+	cmd.Leader = leader
+
+	return
+
+}

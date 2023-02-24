@@ -60,7 +60,7 @@ func (impl playerRepoImpl) SavePlayer(p *domain.Player, version int) error {
 	return impl.insertPlayer(p)
 }
 
-func (repo playerRepoImpl) genPlayerDoc(p *domain.Player) (bson.M, error) {
+func (impl playerRepoImpl) genPlayerDoc(p *domain.Player) (bson.M, error) {
 	var c dCompetitor
 	toCompetitorDoc(&p.Leader, &c)
 
@@ -194,7 +194,7 @@ func (impl playerRepoImpl) FindCompetitionsUserApplied(a types.Account) (
 // CompetitorsCount
 func (impl playerRepoImpl) CompetitorsCount(cid string) (int, error) {
 	var v []struct {
-		Total int `bson:"toal"`
+		Total int `bson:"total"`
 	}
 
 	f := func(ctx context.Context) error {
@@ -274,4 +274,9 @@ func (impl playerRepoImpl) addMember(
 	}
 
 	return err
+}
+
+func (impl playerRepoImpl) ResumeIndividual(d *domain.Competitor) error {
+
+	return nil
 }

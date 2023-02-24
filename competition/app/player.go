@@ -115,3 +115,59 @@ func (s *competitionService) GetMyTeam(cid string, user types.Account) (
 
 	return
 }
+
+func (s *competitionService) LeaveTeam(cid string, competitor types.Account) error {
+	p, version, err := s.playerRepo.FindPlayer(cid, competitor)
+	if err != nil {
+		return err
+	}
+
+	if p.IsIndividualOrLeader() {
+		return errors.New("can not leave")
+	}
+
+	if err = p.Quit(); err != nil {
+		return err
+	}
+
+	return s.playerRepo.SavePlayer(&p, version)
+}
+
+func (s *competitionService) DeleteMember(cid string, cmd *CompetitionTeamDeleteMemberCmd) error {
+	p, version, err := s.playerRepo.FindPlayer(cid, cmd.Leader)
+	if err != nil {
+		return err
+	}
+
+	if err = p.Delete(cmd.User); err != nil {
+		return err
+	}
+
+	return s.playerRepo.SavePlayer(&p, version)
+}
+
+func (s *competitionService) ChangeTeamName(cid string, cmd *CompetitionTeamChangeNameCmd) error {
+	p, version, err := s.playerRepo.FindPlayer(cid, cmd.Leader)
+	if err != nil {
+		return err
+	}
+
+	if err = p.ChangeTeamName(cmd.Name); err != nil {
+		return err
+	}
+
+	return s.playerRepo.SavePlayer(&p, version)
+}
+
+func (s *competitionService) TransferLeader(cid string, cmd *CompetitionTeamTransferCmd) error {
+	p, version, err := s.playerRepo.FindPlayer(cid, cmd.Leader)
+	if err != nil {
+		return err
+	}
+
+	if err = p.TransferLeader(cmd.User); err != nil {
+		return err
+	}
+
+	return s.playerRepo.SavePlayer(&p, version)
+}

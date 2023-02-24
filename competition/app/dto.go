@@ -110,6 +110,21 @@ type CompetitionTeamJoinCmd struct {
 	Leader types.Account
 }
 
+type CompetitionTeamDeleteMemberCmd struct {
+	User   types.Account
+	Leader types.Account
+}
+
+type CompetitionTeamChangeNameCmd struct {
+	Name   domain.TeamName
+	Leader types.Account
+}
+
+type CompetitionTeamTransferCmd struct {
+	User   types.Account
+	Leader types.Account
+}
+
 type CompetitionTeamDTO struct {
 	Name    string                     `json:"name"`
 	Members []CompetitionTeamMemberDTO `json:"members"`
@@ -134,7 +149,7 @@ type CompetitionSubmissionDTO struct {
 	Score    float32 `json:"score"`
 }
 
-func (s competitionService) toCompetitionSubmissionDTO(
+func (s *competitionService) toCompetitionSubmissionDTO(
 	v *domain.Submission, dto *CompetitionSubmissionDTO,
 ) {
 	*dto = CompetitionSubmissionDTO{
@@ -145,7 +160,7 @@ func (s competitionService) toCompetitionSubmissionDTO(
 	}
 }
 
-func (s competitionService) toCompetitionSummaryDTO(
+func (s *competitionService) toCompetitionSummaryDTO(
 	c *domain.CompetitionSummary, dto *CompetitionSummaryDTO,
 ) {
 	*dto = CompetitionSummaryDTO{
@@ -160,7 +175,7 @@ func (s competitionService) toCompetitionSummaryDTO(
 	}
 }
 
-func (s competitionService) toCompetitionDTO(
+func (s *competitionService) toCompetitionDTO(
 	c *domain.Competition, dto *CompetitionDTO,
 ) {
 	s.toCompetitionSummaryDTO(
