@@ -97,3 +97,19 @@ func (req *JoinTeamRequest) ToCmd(user types.Account) (
 
 	return
 }
+
+type ChangeTeamNameRequest struct {
+	Name string `json:"team_name"`
+}
+
+func (req *ChangeTeamNameRequest) ToCmd(leader types.Account) (
+	cmd app.CompetitionTeamChangeNameCmd, err error,
+) {
+	if cmd.Name, err = domain.NewTeamName(req.Name); err != nil {
+		return
+	}
+
+	cmd.Leader = leader
+
+	return
+}

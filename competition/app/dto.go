@@ -176,3 +176,8 @@ func (s competitionService) toCompetitionDTO(
 	dto.DatasetDoc = c.DatasetDoc.URL()
 	dto.DatasetURL = c.DatasetURL.URL()
 }
+
+type CompetitionTeamChangeNameCmd struct {
+	Name   domain.TeamName
+	Leader types.Account
+}

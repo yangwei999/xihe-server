@@ -125,3 +125,16 @@ func (s *competitionService) GetMyTeam(cid string, user types.Account) (
 
 	return
 }
+
+func (s *competitionService) ChangeTeamName(cid string, cmd *CompetitionTeamChangeNameCmd) error {
+	p, version, err := s.playerRepo.FindPlayer(cid, cmd.Leader)
+	if err != nil {
+		return err
+	}
+
+	if err = p.ChangeTeamName(cmd.Name); err != nil {
+		return err
+	}
+
+	return s.playerRepo.AddPlayer(&p, version)
+}
