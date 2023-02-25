@@ -385,7 +385,7 @@ func (ctl *CompetitionController) AddRelatedProject(ctx *gin.Context) {
 // @Summary ChangeName
 // @Description change name of a team
 // @Tags  Competition
-// @Param	id		path	string						true	"competition id"
+// @Param	id	path	string	true	"competition id"
 // @Param	body	body	cc.ChangeTeamNameRequest	true	"body of team name"
 // @Accept json
 // @Success 202
