@@ -32,7 +32,7 @@ func AddRouterForCompetitionController(
 	rg.POST("/v1/competition/:id/competitor", ctl.Apply)
 	rg.PUT("/v1/competition/:id/team", ctl.JoinTeam)
 	rg.PUT("/v1/competition/:id/related_project", ctl.AddRelatedProject)
-	rg.PUT("/v1/competition/:id/team/leave", ctl.LeaveTeam)
+	rg.PUT("/v1/competition/:id/team/quit", ctl.QuitTeam)
 	rg.PUT("/v1/competition/:id/team/delete_member", ctl.DeleteMember)
 	rg.PUT("/v1/competition/:id/team/change_name", ctl.ChangeName)
 	rg.PUT("/v1/competition/:id/team/transfer_leader", ctl.TransferLeader)
@@ -220,7 +220,7 @@ func (ctl *CompetitionController) JoinTeam(ctx *gin.Context) {
 	}
 }
 
-// @Summary LeaveTeam
+// @Summary QuitTeam
 // @Description leave a team of competition
 // @Tags  Competition
 // @Param	id	path	string			true	"competition id"
@@ -228,13 +228,13 @@ func (ctl *CompetitionController) JoinTeam(ctx *gin.Context) {
 // @Success 202
 // @Failure 500 system_error        system error
 // @Router /v1/competition/{id}/team/leave [put]
-func (ctl *CompetitionController) LeaveTeam(ctx *gin.Context) {
+func (ctl *CompetitionController) QuitTeam(ctx *gin.Context) {
 	pl, _, ok := ctl.checkUserApiToken(ctx, false)
 	if !ok {
 		return
 	}
 
-	err := ctl.s.LeaveTeam(ctx.Param("id"), pl.DomainAccount())
+	err := ctl.s.QuitTeam(ctx.Param("id"), pl.DomainAccount())
 	if err != nil {
 		ctl.sendCodeMessage(ctx, "", err)
 	} else {

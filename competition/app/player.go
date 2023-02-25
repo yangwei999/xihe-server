@@ -28,7 +28,7 @@ func (s *competitionService) Apply(cid string, cmd *CompetitorApplyCmd) (code st
 	}
 
 	p := cmd.toPlayer(cid)
-	if err = s.playerRepo.SavePlayer(&p, 0); err != nil {
+	if err = s.playerRepo.AddPlayer(&p, 0); err != nil {
 		if repoerr.IsErrorDuplicateCreating(err) {
 			code = errorCompetitorExists
 		}
@@ -47,7 +47,7 @@ func (s *competitionService) CreateTeam(cid string, cmd *CompetitionTeamCreateCm
 		return err
 	}
 
-	return s.playerRepo.SavePlayer(&p, version)
+	return s.playerRepo.AddPlayer(&p, version)
 }
 
 func (s *competitionService) JoinTeam(cid string, cmd *CompetitionTeamJoinCmd) error {
@@ -116,7 +116,7 @@ func (s *competitionService) GetMyTeam(cid string, user types.Account) (
 	return
 }
 
-func (s *competitionService) LeaveTeam(cid string, competitor types.Account) error {
+func (s *competitionService) QuitTeam(cid string, competitor types.Account) error {
 	p, version, err := s.playerRepo.FindPlayer(cid, competitor)
 	if err != nil {
 		return err
@@ -130,7 +130,11 @@ func (s *competitionService) LeaveTeam(cid string, competitor types.Account) err
 		return err
 	}
 
-	return s.playerRepo.SavePlayer(&p, version)
+	if err = s.playerRepo.AddPlayer(&p, version); err != nil {
+		return err
+	}
+
+	return s.playerRepo.SavePlayer(cid, competitor)
 }
 
 func (s *competitionService) DeleteMember(cid string, cmd *CompetitionTeamDeleteMemberCmd) error {
@@ -143,7 +147,11 @@ func (s *competitionService) DeleteMember(cid string, cmd *CompetitionTeamDelete
 		return err
 	}
 
-	return s.playerRepo.SavePlayer(&p, version)
+	if err = s.playerRepo.AddPlayer(&p, version); err != nil {
+		return err
+	}
+
+	return s.playerRepo.SavePlayer(cid, cmd.User)
 }
 
 func (s *competitionService) ChangeTeamName(cid string, cmd *CompetitionTeamChangeNameCmd) error {
@@ -156,7 +164,7 @@ func (s *competitionService) ChangeTeamName(cid string, cmd *CompetitionTeamChan
 		return err
 	}
 
-	return s.playerRepo.SavePlayer(&p, version)
+	return s.playerRepo.AddPlayer(&p, version)
 }
 
 func (s *competitionService) TransferLeader(cid string, cmd *CompetitionTeamTransferCmd) error {
@@ -169,5 +177,5 @@ func (s *competitionService) TransferLeader(cid string, cmd *CompetitionTeamTran
 		return err
 	}
 
-	return s.playerRepo.SavePlayer(&p, version)
+	return s.playerRepo.AddPlayer(&p, version)
 }

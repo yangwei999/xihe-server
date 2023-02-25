@@ -25,8 +25,8 @@ type PlayerVersion struct {
 type Player interface {
 	SaveTeamName(*domain.Player, int) error
 
-	// SavePlayer should check if the player is individual or team.
-	SavePlayer(*domain.Player, int) error
+	// AddPlayer should check if the player is individual or team.
+	AddPlayer(*domain.Player, int) error
 
 	AddMember(team PlayerVersion, member PlayerVersion) error
 
@@ -36,7 +36,7 @@ type Player interface {
 
 	FindCompetitionsUserApplied(types.Account) ([]string, error)
 
-	ResumeIndividual(d *domain.Competitor) error
+	SavePlayer(cid string, a types.Account) error
 }
 
 type Work interface {
