@@ -122,14 +122,14 @@ func (impl playerRepoImpl) insertPlayer(p *domain.Player) error {
 }
 
 func (impl playerRepoImpl) insertTeam(p *domain.Player, version int) error {
-	if err := impl.updateDisabledOfPlayer(p, version); err != nil {
+	if err := impl.disablePlayer(p, version); err != nil {
 		return err
 	}
 
 	return impl.insertPlayer(p)
 }
 
-func (impl playerRepoImpl) updateDisabledOfPlayer(p *domain.Player, version int) error {
+func (impl playerRepoImpl) disablePlayer(p *domain.Player, version int) error {
 	filter, err := impl.playerFilter(p)
 	if err != nil {
 		return err
@@ -258,7 +258,7 @@ func (impl playerRepoImpl) AddMember(
 	team repository.PlayerVersion,
 	member repository.PlayerVersion,
 ) error {
-	err := impl.updateDisabledOfPlayer(member.Player, member.Version)
+	err := impl.disablePlayer(member.Player, member.Version)
 	if err != nil {
 		return err
 	}
@@ -321,7 +321,7 @@ func (impl playerRepoImpl) SavePlayer(p *domain.Player, version int) error {
 	return err
 }
 
-func (impl playerRepoImpl) getVersion(cid string, a types.Account) (version int, err error) {
+func (impl playerRepoImpl) getVersion(cid string, a types.Account) (int, error) {
 	var v dPlayer
 	f := func(ctx context.Context) error {
 		return impl.cli.GetDoc(
@@ -329,11 +329,9 @@ func (impl playerRepoImpl) getVersion(cid string, a types.Account) (version int,
 		)
 	}
 
-	if err = withContext(f); err == nil {
-		version = v.Version
-	}
+	err := withContext(f)
 
-	return
+	return v.Version, err
 }
 
 func (impl playerRepoImpl) ResumePlayer(cid string, a types.Account) error {
@@ -342,17 +340,7 @@ func (impl playerRepoImpl) ResumePlayer(cid string, a types.Account) error {
 		return err
 	}
 
-	f := func(ctx context.Context) error {
-		return impl.update(
-			impl.disabledPlayerFilter(cid, a), bson.M{fieldEnabled: true}, version,
-		)
-	}
-
-	if err = withContext(f); err != nil {
-		if impl.cli.IsDocNotExists(err) {
-			err = repoerr.NewErrorConcurrentUpdating(err)
-		}
-	}
-
-	return err
+	return impl.update(
+		impl.disabledPlayerFilter(cid, a), bson.M{fieldEnabled: true}, version,
+	)
 }
