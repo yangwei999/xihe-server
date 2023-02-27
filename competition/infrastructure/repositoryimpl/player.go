@@ -52,12 +52,12 @@ func (impl playerRepoImpl) docFilterByUser(cid string, a types.Account) bson.M {
 }
 
 // AddPlayer
-func (impl playerRepoImpl) AddPlayer(p *domain.Player, version int) error {
-	if p.IsATeam() {
-		return impl.insertTeam(p, version)
-	}
-
+func (impl playerRepoImpl) AddPlayer(p *domain.Player) error {
 	return impl.insertPlayer(p)
+}
+
+func (impl playerRepoImpl) DeletePlayer(p *domain.Player, version int) error {
+	return impl.updateEnabledOfPlayer(p, false, version)
 }
 
 func (repo playerRepoImpl) genPlayerDoc(p *domain.Player) (bson.M, error) {
@@ -111,14 +111,6 @@ func (impl playerRepoImpl) insertPlayer(p *domain.Player) error {
 	}
 
 	return err
-}
-
-func (impl playerRepoImpl) insertTeam(p *domain.Player, version int) error {
-	if err := impl.updateEnabledOfPlayer(p, false, version); err != nil {
-		return err
-	}
-
-	return impl.insertPlayer(p)
 }
 
 func (impl playerRepoImpl) updateEnabledOfPlayer(p *domain.Player, enable bool, version int) error {
