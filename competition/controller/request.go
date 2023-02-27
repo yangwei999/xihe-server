@@ -98,21 +98,7 @@ func (req *JoinTeamRequest) ToCmd(user types.Account) (
 	return
 }
 
-type DeleteMemberRequest struct {
-	Account string `json:"competitor_account"`
-}
-
-func (req *DeleteMemberRequest) ToCmd(leader types.Account) (
-	cmd app.CompetitionTeamDeleteMemberCmd, err error,
-) {
-	if cmd.User, err = types.NewAccount(req.Account); err != nil {
-		return
-	}
-
-	cmd.Leader = leader
-
-	return
-}
+type DeleteMemberRequest = TransferLeaderRequest
 
 type ChangeTeamNameRequest struct {
 	Name string `json:"team_name"`

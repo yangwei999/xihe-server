@@ -130,28 +130,36 @@ func (s *competitionService) QuitTeam(cid string, competitor types.Account) erro
 		return err
 	}
 
-	if err = s.playerRepo.AddPlayer(&p, version); err != nil {
+	if err = s.playerRepo.SavePlayer(&p, version); err != nil {
 		return err
 	}
 
-	return s.playerRepo.SavePlayer(cid, competitor)
+	if err = s.playerRepo.EnablePlayer(cid, competitor); err != nil {
+		return err
+	}
+
+	return nil
 }
 
-func (s *competitionService) DeleteMember(cid string, cmd *CompetitionTeamDeleteMemberCmd) error {
+func (s *competitionService) DeleteMember(cid string, cmd *CompetitionTeamDeleteMemberCmd) (err error) {
 	p, version, err := s.playerRepo.FindPlayer(cid, cmd.Leader)
 	if err != nil {
-		return err
+		return
 	}
 
 	if err = p.Delete(cmd.User); err != nil {
-		return err
+		return
 	}
 
-	if err = s.playerRepo.AddPlayer(&p, version); err != nil {
-		return err
+	if err = s.playerRepo.SavePlayer(&p, version); err != nil {
+		return
 	}
 
-	return s.playerRepo.SavePlayer(cid, cmd.User)
+	if err = s.playerRepo.EnablePlayer(cid, cmd.User); err != nil {
+		return
+	}
+
+	return nil
 }
 
 func (s *competitionService) ChangeTeamName(cid string, cmd *CompetitionTeamChangeNameCmd) error {

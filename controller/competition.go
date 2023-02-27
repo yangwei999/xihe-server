@@ -32,8 +32,8 @@ func AddRouterForCompetitionController(
 	rg.POST("/v1/competition/:id/competitor", ctl.Apply)
 	rg.PUT("/v1/competition/:id/team", ctl.JoinTeam)
 	rg.PUT("/v1/competition/:id/related_project", ctl.AddRelatedProject)
-	rg.PUT("/v1/competition/:id/team/quit", ctl.QuitTeam)
-	rg.PUT("/v1/competition/:id/team/delete_member", ctl.DeleteMember)
+	rg.PUT("/v1/competition/:id/team/action/quit", ctl.QuitTeam)
+	rg.PUT("/v1/competition/:id/team/action/delete_member", ctl.DeleteMember)
 	rg.PUT("/v1/competition/:id/team/change_name", ctl.ChangeName)
 	rg.PUT("/v1/competition/:id/team/transfer_leader", ctl.TransferLeader)
 }
@@ -221,13 +221,13 @@ func (ctl *CompetitionController) JoinTeam(ctx *gin.Context) {
 }
 
 // @Summary QuitTeam
-// @Description leave a team of competition
+// @Description quit team
 // @Tags  Competition
-// @Param	id	path	string			true	"competition id"
+// @Param	id	path	string	true	"competition id"
 // @Accept json
 // @Success 202
-// @Failure 500 system_error        system error
-// @Router /v1/competition/{id}/team/leave [put]
+// @Failure 500 system_error	system error
+// @Router /v1/competition/{id}/team/action/quit [put]
 func (ctl *CompetitionController) QuitTeam(ctx *gin.Context) {
 	pl, _, ok := ctl.checkUserApiToken(ctx, false)
 	if !ok {
@@ -245,12 +245,12 @@ func (ctl *CompetitionController) QuitTeam(ctx *gin.Context) {
 // @Summary DeleteMember
 // @Description delete member of a team
 // @Tags  Competition
-// @Param	id	path	string			true	"competition id"
+// @Param	id	path	string	true	"competition id"
 // @Param	body	body	cc.DeleteMemberRequest	true	"body of delete member"
 // @Accept json
 // @Success 202
-// @Failure 500 system_error        system error
-// @Router /v1/competition/{id}/team/delete_member [put]
+// @Failure 500 system_error	system error
+// @Router /v1/competition/{id}/team/action/delete_member [put]
 func (ctl *CompetitionController) DeleteMember(ctx *gin.Context) {
 	req := cc.DeleteMemberRequest{}
 	if err := ctx.ShouldBindJSON(&req); err != nil {

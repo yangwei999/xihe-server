@@ -290,7 +290,7 @@ func (impl playerRepoImpl) disabledPlayerFilter(cid string, a types.Account) bso
 	return filter
 }
 
-func (impl playerRepoImpl) findDisabledPlayer(cid string, a types.Account) (
+func (impl playerRepoImpl) FindDisabledPlayer(cid string, a types.Account) (
 	p domain.Player, version int, err error,
 ) {
 	var v dPlayer
@@ -315,18 +315,55 @@ func (impl playerRepoImpl) findDisabledPlayer(cid string, a types.Account) (
 	return
 }
 
-func (impl playerRepoImpl) SavePlayer(cid string, a types.Account) error {
-	_, version, err := impl.findDisabledPlayer(cid, a)
+// SavePlayer
+func (impl playerRepoImpl) SavePlayer(p *domain.Player, version int) error {
+	filter, err := impl.cli.ObjectIdFilter(p.Id)
+	if err != nil {
+		return err
+	}
+	filter[fieldVersion] = version
+
+	doc, err := impl.genPlayerDoc(p)
 	if err != nil {
 		return err
 	}
 
-	filter := impl.disabledPlayerFilter(cid, a)
-	doc := bson.M{fieldEnabled: true}
-
 	f := func(ctx context.Context) error {
-		return impl.cli.UpdateDoc(ctx, filter, doc, mongoCmdSet, version)
+		_, err = impl.cli.ReplaceDoc(ctx, filter, doc)
+		return err
 	}
 
-	return withContext(f)
+	if err = withContext(f); err != nil {
+		if impl.cli.IsDocNotExists(err) {
+			err = repoerr.NewErrorConcurrentUpdating(err)
+		}
+	}
+
+	return err
+}
+
+func (impl playerRepoImpl) EnablePlayer(cid string, a types.Account) (err error) {
+	var v dPlayer
+	filter := impl.disabledPlayerFilter(cid, a)
+
+	f := func(ctx context.Context) error {
+		return impl.cli.GetDoc(ctx, filter, nil, &v)
+	}
+
+	if err = withContext(f); err != nil {
+		return
+	}
+
+	f = func(ctx context.Context) error {
+		return impl.cli.UpdateDoc(ctx, bson.M{fieldId: v.Id}, bson.M{fieldEnabled: true}, mongoCmdSet, v.Version)
+	}
+
+	if err = withContext(f); err != nil {
+		if impl.cli.IsDocNotExists(err) {
+			err = repoerr.NewErrorConcurrentUpdating(err)
+		}
+	}
+
+	return
+
 }
