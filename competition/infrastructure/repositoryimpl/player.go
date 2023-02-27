@@ -306,3 +306,43 @@ func (impl playerRepoImpl) SavePlayer(p *domain.Player, version int) error {
 
 	return err
 }
+
+func (impl playerRepoImpl) disabledPlayerFilter(cid string, a types.Account) bson.M {
+	filter := bson.M{
+		fieldCid:     cid,
+		fieldEnabled: false,
+	}
+
+	impl.cli.AppendElemMatchToFilter(
+		fieldCompetitors, true,
+		bson.M{fieldAccount: a.Account()}, filter,
+	)
+
+	return filter
+}
+
+func (impl playerRepoImpl) EnablePlayer(cid string, a types.Account) (err error) {
+	var v dPlayer
+	filter := impl.disabledPlayerFilter(cid, a)
+
+	f := func(ctx context.Context) error {
+		return impl.cli.GetDoc(ctx, filter, nil, &v)
+	}
+
+	if err = withContext(f); err != nil {
+		return
+	}
+
+	f = func(ctx context.Context) error {
+		return impl.cli.UpdateDoc(ctx, filter, bson.M{fieldEnabled: true}, mongoCmdSet, v.Version)
+	}
+
+	if err = withContext(f); err != nil {
+		if impl.cli.IsDocNotExists(err) {
+			err = repoerr.NewErrorConcurrentUpdating(err)
+		}
+	}
+
+	return
+
+}
