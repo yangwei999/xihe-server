@@ -311,12 +311,8 @@ func (impl playerRepoImpl) disabledPlayerFilter(cid string, a types.Account) bso
 	filter := bson.M{
 		fieldCid:     cid,
 		fieldEnabled: false,
+		fieldLeader:  a.Account(),
 	}
-
-	impl.cli.AppendElemMatchToFilter(
-		fieldCompetitors, true,
-		bson.M{fieldAccount: a.Account()}, filter,
-	)
 
 	return filter
 }
