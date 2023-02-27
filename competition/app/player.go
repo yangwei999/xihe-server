@@ -174,7 +174,7 @@ func (s *competitionService) QuitTeam(cid string, competitor types.Account) erro
 		return err
 	}
 
-	if err = s.playerRepo.EnablePlayer(cid, competitor); err != nil {
+	if err = s.playerRepo.ResumePlayer(cid, competitor); err != nil {
 		return err
 	}
 

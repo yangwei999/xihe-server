@@ -321,10 +321,10 @@ func (impl playerRepoImpl) disabledPlayerFilter(cid string, a types.Account) bso
 	return filter
 }
 
-func (impl playerRepoImpl) EnablePlayer(cid string, a types.Account) (err error) {
-	var v dPlayer
+func (impl playerRepoImpl) getVersion(cid string, a types.Account) (version int, err error) {
 	filter := impl.disabledPlayerFilter(cid, a)
 
+	var v dPlayer
 	f := func(ctx context.Context) error {
 		return impl.cli.GetDoc(ctx, filter, nil, &v)
 	}
@@ -333,8 +333,21 @@ func (impl playerRepoImpl) EnablePlayer(cid string, a types.Account) (err error)
 		return
 	}
 
-	f = func(ctx context.Context) error {
-		return impl.cli.UpdateDoc(ctx, filter, bson.M{fieldEnabled: true}, mongoCmdSet, v.Version)
+	version = v.Version
+
+	return
+}
+
+func (impl playerRepoImpl) ResumePlayer(cid string, a types.Account) (err error) {
+	version, err := impl.getVersion(cid, a)
+	if err != nil {
+		return
+	}
+
+	filter := impl.disabledPlayerFilter(cid, a)
+
+	f := func(ctx context.Context) error {
+		return impl.cli.UpdateDoc(ctx, filter, bson.M{fieldEnabled: true}, mongoCmdSet, version)
 	}
 
 	if err = withContext(f); err != nil {
@@ -344,5 +357,4 @@ func (impl playerRepoImpl) EnablePlayer(cid string, a types.Account) (err error)
 	}
 
 	return
-
 }

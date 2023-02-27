@@ -38,7 +38,7 @@ type Player interface {
 
 	SavePlayer(p *domain.Player, version int) error
 
-	EnablePlayer(cid string, a types.Account) (err error)
+	ResumePlayer(cid string, a types.Account) (err error)
 }
 
 type Work interface {
