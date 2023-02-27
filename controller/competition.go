@@ -36,6 +36,7 @@ func AddRouterForCompetitionController(
 	rg.PUT("/v1/competition/:id/team/action/delete_member", ctl.DeleteMember)
 	rg.PUT("/v1/competition/:id/team/change_name", ctl.ChangeName)
 	rg.PUT("/v1/competition/:id/team/transfer_leader", ctl.TransferLeader)
+	rg.PUT("/v1/competition/:id/team/action/dissolve", ctl.Dissolve)
 }
 
 type CompetitionController struct {
@@ -239,6 +240,28 @@ func (ctl *CompetitionController) QuitTeam(ctx *gin.Context) {
 		ctl.sendCodeMessage(ctx, "", err)
 	} else {
 		ctl.sendRespOfGet(ctx, "success")
+	}
+}
+
+// @Summary Dissolve
+// @Description dissolve a team
+// @Tags  Competition
+// @Param	id	path	string	true	"competition id"
+// @Accept json
+// @Success 202
+// @Failure 500 system_error	system error
+// @Router /v1/competition/{id}/team/action/dissolve [put]
+func (ctl *CompetitionController) Dissolve(ctx *gin.Context) {
+	pl, _, ok := ctl.checkUserApiToken(ctx, false)
+	if !ok {
+		return
+	}
+
+	err := ctl.s.DissolveTeam(ctx.Param("id"), pl.DomainAccount())
+	if err != nil {
+		ctl.sendCodeMessage(ctx, "", err)
+	} else {
+		ctl.sendRespOfPut(ctx, "success")
 	}
 }
 

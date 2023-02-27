@@ -187,3 +187,19 @@ func (s *competitionService) TransferLeader(cid string, cmd *CompetitionTeamTran
 
 	return s.playerRepo.AddPlayer(&p, version)
 }
+
+func (s *competitionService) DissolveTeam(cid string, leader types.Account) error {
+	p, version, err := s.playerRepo.FindPlayer(cid, leader)
+	if err != nil {
+		return err
+	}
+
+	for _, m := range p.Members() {
+		// resume member
+	}
+	// resume leader
+
+	// delete team
+
+	return nil
+}

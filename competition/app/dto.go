@@ -110,10 +110,7 @@ type CompetitionTeamJoinCmd struct {
 	Leader types.Account
 }
 
-type CompetitionTeamDeleteMemberCmd struct {
-	User   types.Account
-	Leader types.Account
-}
+type CompetitionTeamDeleteMemberCmd = CompetitionTeamTransferCmd
 
 type CompetitionTeamChangeNameCmd struct {
 	Name   domain.TeamName

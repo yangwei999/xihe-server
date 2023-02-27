@@ -19,6 +19,7 @@ type CompetitionService interface {
 	DeleteMember(cid string, cmd *CompetitionTeamDeleteMemberCmd) error
 	ChangeTeamName(cid string, cmd *CompetitionTeamChangeNameCmd) error
 	TransferLeader(cid string, cmd *CompetitionTeamTransferCmd) error
+	DissolveTeam(cid string, leader types.Account) error
 
 	// competition
 	Get(cid string, competitor types.Account) (UserCompetitionDTO, error)
