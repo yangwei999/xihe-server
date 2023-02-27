@@ -474,6 +474,6 @@ func (ctl *CompetitionController) QuitTeam(ctx *gin.Context) {
 	if err != nil {
 		ctl.sendCodeMessage(ctx, "", err)
 	} else {
-		ctl.sendRespOfGet(ctx, "success")
+		ctl.sendRespOfPut(ctx, "success")
 	}
 }
