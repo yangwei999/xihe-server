@@ -62,14 +62,10 @@ func (impl playerRepoImpl) AddPlayer(p *domain.Player, version int) error {
 
 func (repo playerRepoImpl) genPlayerDoc(p *domain.Player) (bson.M, error) {
 	var dc []dCompetitor
-	var l, c dCompetitor
 
-	toCompetitorDoc(&p.Leader, &l)
-	dc = append(dc, l)
-
+	dc = append(dc, toCompetitorDoc(&p.Leader))
 	for _, m := range p.Members() {
-		toCompetitorDoc(&m, &c)
-		dc = append(dc, c)
+		dc = append(dc, toCompetitorDoc(&m))
 	}
 
 	obj := dPlayer{
@@ -258,8 +254,7 @@ func (impl playerRepoImpl) addMember(
 		return err
 	}
 
-	var c dCompetitor
-	toCompetitorDoc(&member.Leader, &c)
+	c := toCompetitorDoc(&member.Leader)
 
 	doc, err := genDoc(&c)
 	if err != nil {
@@ -284,7 +279,7 @@ func (impl playerRepoImpl) addMember(
 
 // SavePlayer
 func (impl playerRepoImpl) SavePlayer(p *domain.Player, version int) error {
-	filter, err := impl.cli.ObjectIdFilter(p.Id)
+	filter, err := impl.playerFilter(p)
 	if err != nil {
 		return err
 	}
