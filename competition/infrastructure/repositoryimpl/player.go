@@ -83,9 +83,6 @@ func (repo playerRepoImpl) genPlayerDoc(p *domain.Player) (bson.M, error) {
 	}
 
 	doc, err := genDoc(&obj)
-	if err == nil {
-		doc[fieldVersion] = 0
-	}
 
 	return doc, err
 }
@@ -95,6 +92,7 @@ func (impl playerRepoImpl) insertPlayer(p *domain.Player) error {
 	if err != nil {
 		return err
 	}
+	doc[fieldVersion] = 0
 
 	f := func(ctx context.Context) error {
 		filter := impl.docFilterByUser(p.CompetitionId, p.Leader.Account)
@@ -290,7 +288,6 @@ func (impl playerRepoImpl) SavePlayer(p *domain.Player, version int) error {
 	if err != nil {
 		return err
 	}
-	filter[fieldVersion] = version
 
 	doc, err := impl.genPlayerDoc(p)
 	if err != nil {
