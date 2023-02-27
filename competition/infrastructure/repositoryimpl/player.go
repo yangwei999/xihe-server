@@ -61,16 +61,15 @@ func (impl playerRepoImpl) AddPlayer(p *domain.Player, version int) error {
 }
 
 func (repo playerRepoImpl) genPlayerDoc(p *domain.Player) (bson.M, error) {
-	var dc []dCompetitor
-
-	dc = append(dc, toCompetitorDoc(&p.Leader))
-	for _, m := range p.Members() {
-		dc = append(dc, toCompetitorDoc(&m))
+	cs := make([]dCompetitor, p.CompetitorsCount())
+	for i, m := range p.Members() {
+		cs[i+1] = toCompetitorDoc(&m)
 	}
+	cs[0] = toCompetitorDoc(&p.Leader)
 
 	obj := dPlayer{
 		CompetitionId: p.CompetitionId,
-		Competitors:   dc,
+		Competitors:   cs,
 		Leader:        p.Leader.Account.Account(),
 		Enabled:       true,
 	}
@@ -255,7 +254,6 @@ func (impl playerRepoImpl) addMember(
 	}
 
 	c := toCompetitorDoc(&member.Leader)
-
 	doc, err := genDoc(&c)
 	if err != nil {
 		return err
