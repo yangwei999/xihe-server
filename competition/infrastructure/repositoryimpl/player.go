@@ -57,7 +57,30 @@ func (impl playerRepoImpl) AddPlayer(p *domain.Player) error {
 }
 
 func (impl playerRepoImpl) DeletePlayer(p *domain.Player, version int) error {
+	if p.IsATeam() {
+		return impl.deletePlayer(p)
+	}
 	return impl.updateEnabledOfPlayer(p, false, version)
+}
+
+func (impl playerRepoImpl) deletePlayer(p *domain.Player) error {
+	f := func(ctx context.Context) error {
+		filter, err := impl.playerFilter(p)
+		if err != nil {
+			return err
+		}
+
+		return impl.cli.DeleteDoc(ctx, filter)
+	}
+
+	err := withContext(f)
+	if err != nil {
+		if impl.cli.IsDocExists(err) {
+			err = repoerr.NewErrorDuplicateCreating(err)
+		}
+	}
+
+	return err
 }
 
 func (repo playerRepoImpl) genPlayerDoc(p *domain.Player) (bson.M, error) {

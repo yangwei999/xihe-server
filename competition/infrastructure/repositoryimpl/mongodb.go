@@ -33,6 +33,8 @@ type mongodbClient interface {
 	UpdateDoc(ctx context.Context, filterOfDoc, update bson.M, op string, version int) error
 
 	ModifyArrayElem(ctx context.Context, array string, filterOfDoc, filterOfArray, updateCmd bson.M, op string) (bool, error)
+
+	DeleteDoc(ctx context.Context, filterOfDoc bson.M) error
 }
 
 func withContext(f func(context.Context) error) error {

@@ -49,6 +49,12 @@ func (c collection) GetDocs(
 	return cli.getDocs(ctx, c.name, filterOfDoc, project, result)
 }
 
+func (c collection) DeleteDoc(
+	ctx context.Context, filterOfDoc bson.M,
+) error {
+	return cli.deleteDoc(ctx, c.name, filterOfDoc)
+}
+
 func (c collection) NewDocIfNotExist(
 	ctx context.Context, filterOfDoc, docInfo bson.M,
 ) (string, error) {

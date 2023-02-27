@@ -215,6 +215,19 @@ func (cli *client) getDocs(
 	return cursor.All(ctx, result)
 }
 
+func (cli *client) deleteDoc(
+	ctx context.Context, collection string, filterOfDoc bson.M,
+) error {
+	col := cli.collection(collection)
+
+	r, err := col.DeleteOne(ctx, filterOfDoc)
+	if r.DeletedCount == 0 {
+		return errDocNotExists
+	}
+
+	return err
+}
+
 func (cli *client) addToSimpleArray(
 	ctx context.Context, collection, array string,
 	filterOfDoc, value interface{},
