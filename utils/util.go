@@ -89,3 +89,15 @@ func GCD(a, b int) int {
 func LCM(a, b int) int {
 	return a * (b / GCD(a, b))
 }
+
+func RetryThreeTimes(f func() error) {
+	retryTimes := 3
+
+	for i := 1; i <= retryTimes; i++ {
+		if err := f(); err == nil {
+			return
+		}
+
+		time.Sleep(time.Second)
+	}
+}

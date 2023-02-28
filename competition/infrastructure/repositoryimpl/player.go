@@ -60,11 +60,7 @@ func (impl playerRepoImpl) disabledPlayerFilter(cid string, a types.Account) bso
 }
 
 // AddPlayer
-func (impl playerRepoImpl) AddPlayer(p *domain.Player, version int) error {
-	if p.IsATeam() {
-		return impl.insertTeam(p, version)
-	}
-
+func (impl playerRepoImpl) AddPlayer(p *domain.Player) error {
 	return impl.insertPlayer(p)
 }
 
@@ -121,15 +117,7 @@ func (impl playerRepoImpl) insertPlayer(p *domain.Player) error {
 	return err
 }
 
-func (impl playerRepoImpl) insertTeam(p *domain.Player, version int) error {
-	if err := impl.disablePlayer(p, version); err != nil {
-		return err
-	}
-
-	return impl.insertPlayer(p)
-}
-
-func (impl playerRepoImpl) disablePlayer(p *domain.Player, version int) error {
+func (impl playerRepoImpl) DeletePlayer(p *domain.Player, version int) error {
 	filter, err := impl.playerFilter(p)
 	if err != nil {
 		return err
@@ -258,10 +246,6 @@ func (impl playerRepoImpl) AddMember(
 	team repository.PlayerVersion,
 	member repository.PlayerVersion,
 ) error {
-	err := impl.disablePlayer(member.Player, member.Version)
-	if err != nil {
-		return err
-	}
 
 	return impl.addMember(team, member.Player)
 }
