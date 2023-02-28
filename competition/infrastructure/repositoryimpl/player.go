@@ -246,19 +246,12 @@ func (impl playerRepoImpl) AddMember(
 	team repository.PlayerVersion,
 	member repository.PlayerVersion,
 ) error {
-
-	return impl.addMember(team, member.Player)
-}
-
-func (impl playerRepoImpl) addMember(
-	team repository.PlayerVersion, member *domain.Player,
-) error {
 	filter, err := impl.playerFilter(team.Player)
 	if err != nil {
 		return err
 	}
 
-	c := toCompetitorDoc(&member.Leader)
+	c := toCompetitorDoc(&member.Player.Leader)
 	doc, err := genDoc(&c)
 	if err != nil {
 		return err
