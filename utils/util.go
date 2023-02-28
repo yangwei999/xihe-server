@@ -91,9 +91,7 @@ func LCM(a, b int) int {
 }
 
 func RetryThreeTimes(f func() error) {
-	retryTimes := 3
-
-	for i := 1; i <= retryTimes; i++ {
+	for i := 1; i <= 3; i++ {
 		if err := f(); err == nil {
 			return
 		}

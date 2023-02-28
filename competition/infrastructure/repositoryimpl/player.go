@@ -204,7 +204,7 @@ func (impl playerRepoImpl) FindCompetitionsUserApplied(a types.Account) (
 // CompetitorsCount
 func (impl playerRepoImpl) CompetitorsCount(cid string) (int, error) {
 	var v []struct {
-		Total int `bson:"toal"`
+		Total int `bson:"total"`
 	}
 
 	f := func(ctx context.Context) error {
