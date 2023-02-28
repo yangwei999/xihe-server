@@ -3,6 +3,8 @@ package app
 import (
 	"errors"
 
+	"github.com/opensourceways/community-robot-lib/utils"
+
 	"github.com/opensourceways/xihe-server/competition/domain"
 	"github.com/opensourceways/xihe-server/competition/domain/repository"
 	types "github.com/opensourceways/xihe-server/domain"
@@ -57,9 +59,13 @@ func (s *competitionService) CreateTeam(cid string, cmd *CompetitionTeamCreateCm
 		if repoerr.IsErrorDuplicateCreating(err) {
 			code = errorTeamExists
 		}
+		mr := utils.NewMultiErrors()
+		mr.AddError(err)
 
-		s.playerRepo.ResumePlayer(cid, cmd.User)
+		err = s.playerRepo.ResumePlayer(cid, cmd.User)
+		mr.AddError(err)
 
+		err = mr.Err()
 		return
 	}
 
@@ -104,7 +110,13 @@ func (s *competitionService) JoinTeam(cid string, cmd *CompetitionTeamJoinCmd) (
 		},
 	)
 	if err != nil {
-		s.playerRepo.ResumePlayer(cid, cmd.User)
+		mr := utils.NewMultiErrors()
+		mr.AddError(err)
+
+		err = s.playerRepo.ResumePlayer(cid, cmd.User)
+		mr.AddError(err)
+
+		err = mr.Err()
 	}
 
 	return
