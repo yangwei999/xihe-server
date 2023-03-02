@@ -129,6 +129,7 @@ func (s *competitionService) GetMyTeam(cid string, user types.Account) (
 	}
 
 	dto.Name = p.Name()
+	dto.Account = user.Account()
 
 	m := p.Members()
 	members := make([]CompetitionTeamMemberDTO, p.CompetitorsCount())

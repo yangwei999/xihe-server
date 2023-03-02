@@ -111,6 +111,7 @@ type CompetitionTeamJoinCmd struct {
 }
 
 type CompetitionTeamDTO struct {
+	Account string                     `json:"account"`
 	Name    string                     `json:"name"`
 	Members []CompetitionTeamMemberDTO `json:"members"`
 }
