@@ -1311,8 +1311,6 @@ definitions:
     type: object
   github_com_opensourceways_xihe-server_competition_app.CompetitionTeamDTO:
     properties:
-      account:
-        type: string
       members:
         items:
           $ref: '#/definitions/github_com_opensourceways_xihe-server_competition_app.CompetitionTeamMemberDTO'
@@ -1322,6 +1320,8 @@ definitions:
     type: object
   github_com_opensourceways_xihe-server_competition_app.CompetitionTeamMemberDTO:
     properties:
+      account:
+        type: string
       email:
         type: string
       name:

@@ -6569,9 +6569,6 @@ const docTemplate = `{
         "github_com_opensourceways_xihe-server_competition_app.CompetitionTeamDTO": {
             "type": "object",
             "properties": {
-                "account": {
-                    "type": "string"
-                },
                 "members": {
                     "type": "array",
                     "items": {
@@ -6586,6 +6583,9 @@ const docTemplate = `{
         "github_com_opensourceways_xihe-server_competition_app.CompetitionTeamMemberDTO": {
             "type": "object",
             "properties": {
+                "account": {
+                    "type": "string"
+                },
                 "email": {
                     "type": "string"
                 },

@@ -111,15 +111,15 @@ type CompetitionTeamJoinCmd struct {
 }
 
 type CompetitionTeamDTO struct {
-	Account string                     `json:"account"`
 	Name    string                     `json:"name"`
 	Members []CompetitionTeamMemberDTO `json:"members"`
 }
 
 type CompetitionTeamMemberDTO struct {
-	Name  string `json:"name"`
-	Role  string `json:"role"`
-	Email string `json:"email"`
+	Name    string `json:"name"`
+	Role    string `json:"role"`
+	Email   string `json:"email"`
+	Account string `json:"account"`
 }
 
 // result
