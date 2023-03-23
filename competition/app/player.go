@@ -213,3 +213,22 @@ func (s *competitionService) DeleteMember(cid string, cmd *CmdToDeleteTeamMember
 
 	return s.playerRepo.ResumePlayer(cid, cmd.User)
 }
+
+func (s *competitionService) DissolveTeam(cid string, leader types.Account) error {
+	p, version, err := s.playerRepo.FindPlayer(cid, leader)
+	if err != nil {
+		return err
+	}
+
+	for _, m := range p.Members() {
+		if err = s.playerRepo.ResumePlayer(cid, m.Account); err != nil {
+			return err
+		}
+	}
+
+	if err = s.playerRepo.ResumePlayer(cid, leader); err != nil {
+		return err
+	}
+
+	return s.playerRepo.DeletePlayer(&p, version)
+}
