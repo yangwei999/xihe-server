@@ -220,16 +220,12 @@ func (s *competitionService) DissolveTeam(cid string, leader types.Account) erro
 		return err
 	}
 
-	if err = p.Dissolve(); err != nil {
-		return err
-	}
-
 	for _, m := range p.Members() {
-		if err = s.playerRepo.ResumePlayer(cid, m.Account); err != nil {
+		if err = p.Delete(m.Account); err != nil {
 			return err
 		}
 
-		if err = p.Delete(m.Account); err != nil {
+		if err = s.playerRepo.ResumePlayer(cid, m.Account); err != nil {
 			return err
 		}
 

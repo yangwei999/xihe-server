@@ -242,11 +242,3 @@ func (p *Player) TransferLeader(newOne types.Account) error {
 
 	return nil
 }
-
-func (p *Player) Dissolve() error {
-	if !p.isUserTheLeader() {
-		return errors.New("only leader can dissolve team")
-	}
-
-	return nil
-}
