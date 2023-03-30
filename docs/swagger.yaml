@@ -53,6 +53,21 @@ definitions:
           type: string
         type: array
     type: object
+  app.CloudDTO:
+    properties:
+      feature:
+        type: string
+      image:
+        type: string
+      is_free:
+        type: boolean
+      name:
+        type: string
+      processor:
+        type: string
+      spec:
+        type: string
+    type: object
   app.CodeGeexDTO:
     properties:
       finish:
@@ -2074,6 +2089,10 @@ paths:
       responses:
         "200":
           description: OK
+          schema:
+            items:
+              $ref: '#/definitions/app.CloudDTO'
+            type: array
         "500":
           description: Internal Server Error
           schema:

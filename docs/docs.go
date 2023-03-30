@@ -938,7 +938,13 @@ const docTemplate = `{
                 "summary": "List",
                 "responses": {
                     "200": {
-                        "description": "OK"
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/app.CloudDTO"
+                            }
+                        }
                     },
                     "500": {
                         "description": "Internal Server Error",
@@ -5081,6 +5087,29 @@ const docTemplate = `{
                     "items": {
                         "type": "string"
                     }
+                }
+            }
+        },
+        "app.CloudDTO": {
+            "type": "object",
+            "properties": {
+                "feature": {
+                    "type": "string"
+                },
+                "image": {
+                    "type": "string"
+                },
+                "is_free": {
+                    "type": "boolean"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "processor": {
+                    "type": "string"
+                },
+                "spec": {
+                    "type": "string"
                 }
             }
         },
