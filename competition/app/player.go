@@ -207,11 +207,11 @@ func (s *competitionService) DeleteMember(cid string, cmd *CmdToDeleteTeamMember
 		return err
 	}
 
-	if err = s.playerRepo.SavePlayer(&p, version); err != nil {
+	if err = s.playerRepo.ResumePlayer(cid, cmd.User); err != nil {
 		return err
 	}
 
-	return s.playerRepo.ResumePlayer(cid, cmd.User)
+	return s.playerRepo.SavePlayer(&p, version)
 }
 
 func (s *competitionService) DissolveTeam(cid string, leader types.Account) error {
