@@ -238,10 +238,12 @@ func (ctl baseController) checkUserApiTokenBase(
 		return
 	}
 
+	pl = new(oldUserTokenPayload)
+
 	if token == "" || csrftoken == "" {
 		// try best to grab userinfo
 		if token != "" {
-			_, _, _ = ctl.checkToken(ctx, token, &pl)
+			_, _, _ = ctl.checkToken(ctx, token, pl)
 		}
 		if allowVistor {
 			visitor = true
@@ -256,7 +258,6 @@ func (ctl baseController) checkUserApiTokenBase(
 		return
 	}
 
-	pl = new(oldUserTokenPayload)
 	ok = ctl.checkApiToken(ctx, token, csrftoken, pl, refresh)
 
 	// set payload address in context
@@ -471,7 +472,6 @@ func (ctl baseController) getRemoteAddr(ctx *gin.Context) (string, error) {
 // crypt for token
 func (ctl baseController) encryptData(d string) (string, error) {
 	t, err := encryptHelper.Encrypt([]byte(d))
-
 	if err != nil {
 		return "", err
 	}
