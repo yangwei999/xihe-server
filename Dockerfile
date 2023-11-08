@@ -10,9 +10,11 @@ RUN cd /go/src/github.com/opensourceways/xihe-server && GO111MODULE=on CGO_ENABL
 FROM openeuler/openeuler:22.03
 RUN dnf -y update && \
     dnf in -y shadow && \
+    dnf remove -y gdb-gdbserver && \
     groupadd -g 5000 mindspore && \
     useradd -u 5000 -g mindspore -s /sbin/nologin -m mindspore
 
+RUN echo > /etc/issue && echo > /issue.net && echo > /etc/motd
 RUN mkdir /opt/app -p
 RUN chmod 700 /opt/app
 RUN chown mindspore:mindspore /opt/app
