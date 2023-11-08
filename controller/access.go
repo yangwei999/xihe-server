@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
 
@@ -41,6 +42,8 @@ func (ctl *accessController) newToken(secret string) (string, error) {
 }
 
 func (ctl *accessController) initByToken(token, secret string) error {
+	defer utils.ClearStringMemory(token)
+
 	t, err := jwt.Parse(token, func(t1 *jwt.Token) (interface{}, error) {
 		if _, ok := t1.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, fmt.Errorf("unexpected signing method")
@@ -69,18 +72,12 @@ func (ctl *accessController) initByToken(token, secret string) error {
 }
 
 func verifyCSRFToken(tokenbyte, csrftoken []byte) (ok bool) {
-	token := string(tokenbyte)
-
-	return string(csrftoken) == token
+	return bytes.Equal(csrftoken, tokenbyte)
 }
 
 func (ctl *accessController) refreshToken(expiry int64, secret string) (string, error) {
 	ctl.Expiry = utils.Expiry(expiry)
 	return ctl.newToken(secret)
-}
-
-func (ctl *accessController) genCSRFToken(token string) (ct string) {
-	return token
 }
 
 func (ctl *accessController) verify(roles []string) error {
