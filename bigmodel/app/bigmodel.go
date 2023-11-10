@@ -29,7 +29,6 @@ type BigModelService interface {
 	LuoJiaUploadPicture(io.Reader, types.Account) error
 	LuoJia(types.Account) (string, error)
 	ListLuoJiaRecord(types.Account) ([]LuoJiaRecordDTO, error)
-	LuoJiaHF(*LuoJiaHFCmd) (string, error)
 
 	// wukong
 	GenWuKongSamples(int) ([]string, error)
@@ -575,7 +574,9 @@ func (s bigModelService) CancelPublic(user types.Account, pid string) (err error
 		return
 	}
 
-	s.fm.DeleteWuKongPicture(v.OBSPath.OBSPath())
+	if err = s.fm.DeleteWuKongPicture(v.OBSPath.OBSPath()); err != nil {
+		return
+	}
 
 	return
 }
