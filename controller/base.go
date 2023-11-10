@@ -684,6 +684,9 @@ func (ctl baseController) checkBigmodelApiToken(ctx *gin.Context) (user string, 
 	v := ctx.GetHeader(Token)
 	deToken, err := ctl.decryptData(v)
 	if err != nil {
+		ctx.JSON(http.StatusBadRequest, newResponseCodeMsg(
+			errorBadRequestParam, "invalid token",
+		))
 		prepareOperateLog(ctx, "anonymous", OPERATE_TYPE_SYSTEM, "check bigmodel api token")
 		return
 	}
@@ -694,6 +697,10 @@ func (ctl baseController) checkBigmodelApiToken(ctx *gin.Context) (user string, 
 
 	time, err := strconv.ParseInt(strs[1], 10, 64)
 	if err != nil {
+		ctx.JSON(http.StatusBadRequest, newResponseCodeMsg(
+			errorBadRequestParam, "invalid token",
+		))
+
 		if user == "" {
 			prepareOperateLog(ctx, "anonymous", OPERATE_TYPE_SYSTEM, "check bigmodel api token")
 		} else {
@@ -707,6 +714,7 @@ func (ctl baseController) checkBigmodelApiToken(ctx *gin.Context) (user string, 
 		ctx.JSON(http.StatusBadRequest, newResponseCodeMsg(
 			errorBadRequestParam, "token expire",
 		))
+
 		if user == "" {
 			prepareOperateLog(ctx, "anonymous", OPERATE_TYPE_SYSTEM, "check bigmodel api token")
 		} else {
